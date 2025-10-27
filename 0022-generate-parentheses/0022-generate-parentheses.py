@@ -1,15 +1,20 @@
+from typing import List
+
 class Solution:
-    def generateParenthesis(self, n: int) -> list[str]:
-        results = []
+    def generateParenthesis(self, n: int) -> List[str]:
+        res: List[str] = []
 
-        def backtrack(path, a, b):
-            if len(path) == n * 2:
-                results.append(path)
+        def dfs(curr: str, opened: int, balance: int) -> None:
+            # if we have placed 2n characters, then it is a valid sequence
+            if len(curr) == 2 * n:
+                res.append(curr)
                 return
-            if a < n:
-                backtrack(path + "(", a + 1, b)
-            if b < a:
-                backtrack(path + ")", a, b + 1)
+            # try adding "(" if we haven't used up all n opens
+            if opened < n:
+                dfs(curr + "(", opened + 1, balance + 1)
+            # try adding ")" for any unmatched "("
+            if balance > 0:
+                dfs(curr + ")", opened, balance - 1)
 
-        backtrack("(", 1, 0)
-        return results
+        dfs("", 0, 0)
+        return res
